@@ -3,8 +3,7 @@ import java.time.LocalDateTime;
 
 
 public class CreateTables {
-    public static void main(String[] args) {
-        System.out.println("Start time = "+ LocalDateTime.now());
+    public static void main() {
         String dbUrl = "jdbc:oracle:thin:@oas.usa-env.com:1521/orclpdb";
         String user = "OA_PLAN_STG";
         String pwd = "STG_Pl#n4oa5";
@@ -13,12 +12,12 @@ public class CreateTables {
             Connection con = DriverManager.getConnection(dbUrl, user, pwd);
             Connection con2 = DriverManager.getConnection(dbUrl, user, pwd);
             String aksql = "select DISTINCT OBJECT_NAME, OBJECT_SCHEMA from OA_PLAN_STG.INFINITY_CFG_DV Where OBJECT_NAME in (select TABLE_NAME from all_tables)";
-            System.out.println(aksql);
+            //System.out.println(aksql);
             Statement cst = con.createStatement();
             ResultSet rc = cst.executeQuery(aksql);
             while (rc.next()) {
                 String tname2 = rc.getString("OBJECT_NAME");
-                System.out.println("Altering table " + tname2);
+                //System.out.println("Altering table " + tname2);
                 if (tname2 == null) {
                     System.out.println("done");
                 } else {
@@ -26,14 +25,14 @@ public class CreateTables {
                 }
             }
             String csql = "select DISTINCT OBJECT_NAME, OBJECT_SCHEMA from OA_PLAN_STG.INFINITY_CFG_DV Where OBJECT_NAME not in (select TABLE_NAME from all_tables)";
-            System.out.println(csql);
+            //System.out.println(csql);
             Statement s = con2.createStatement();
             ResultSet r = s.executeQuery(csql);
                  while (r.next()) {
                     String tname1 = r.getString("OBJECT_NAME");
                     String os = r.getString("OBJECT_SCHEMA");
-                    System.out.println("Creating table " + tname1);
-                    System.out.println("Table " + tname1);
+                    //System.out.println("Creating table " + tname1);
+                    //System.out.println("Table " + tname1);
                     if (tname1 == null) {
                         System.out.println("done");
                     } else {
@@ -54,16 +53,15 @@ public class CreateTables {
                 System.exit(-1);
             }
         }
-        System.out.println("Stop time = "+ LocalDateTime.now());
     }
-         public static void createTable(String dbUrl,String user,String pwd,String schema ,String tname) {
+    public static void createTable(String dbUrl,String user,String pwd,String schema ,String tname) {
 
         try {
             Connection con3 = DriverManager.getConnection(dbUrl, user, pwd);
             Statement s1 = con3.createStatement();
             String csql = "create table "+ schema + "." + tname + " (dummy varchar2(1))";
             s1.executeQuery(csql);
-            System.out.println("Created: "+tname);
+            //System.out.println("Created: "+tname);
             alterTable(dbUrl,user,pwd,tname);
             System.out.println("Added all Colmuns");
             String dummy = "Alter Table " + schema + "." + tname + " DROP COLUMN dummy";
@@ -128,6 +126,7 @@ public class CreateTables {
                 String os = r5.getString("OBJECT_SCHEMA");
                 String tssql = "Alter table " + os+"."+tname + " MODIFY LOAD_DTS Default sysdate";
                 ResultSet r6 = s6.executeQuery(tssql);
+                //System.out.println(tssql);
             }
         }catch (SQLException e) {
                 throw new RuntimeException(e);
